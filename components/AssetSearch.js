@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ToastAndroid, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
-export default function AssetSearch() {
+import { SNIPE_IT_PROXY_API_URL } from "@env";
+
+export default function AssetSearch({ navigation }) {
 
     const [assetTag, setText] = useState('');
 
     const fetchAsset = (asset_tag) => {
-        console.log(process.env.SNIPE_IT_PROXY_API_URL + `/hardware/bytag/${asset_tag}`);
-        fetch(process.env.SNIPE_IT_PROXY_API_URL + `/hardware/bytag/${asset_tag}`)
-            .then(response => response.json()).then(json => console.log(json))
+        fetch(SNIPE_IT_PROXY_API_URL + `/hardware/bytag/${asset_tag}`)
+            .then(response =>  response.json())
+            .then(json => {
+              if(!('status' in json))
+                navigation.navigate('Asset', {asset: json});
+              else {
+                if (Platform.OS == 'android')
+                  ToastAndroid.show('Asset not found', ToastAndroid.SHORT);
+              }
+
+            })
             .catch(error => console.error(error));
     }
   
