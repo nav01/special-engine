@@ -6,6 +6,7 @@ export default function Asset({ route, navigation }) {
     const { asset } = route.params;
 
     navigation.setOptions({title: `Asset - ${asset['asset_tag']}`});
+    
     return (
         <View style={{height: '100%', width: '100%', alignItems: 'center', backgroundColor: 'white'}}>
             <Image source={{uri: asset['image']}} style={styles.assetImage}/>
