@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Text, Image, View } from 'react-native';
 import { AntDesign } from "@expo/vector-icons"
 
 export default function Asset({ route, navigation }) {
     const { asset } = route.params;
 
-    navigation.setOptions({title: `Asset - ${asset['asset_tag']}`});
+
+    useEffect(() => navigation.setOptions({title: `Asset - ${asset['asset_tag']}`}));
     
     return (
         <View style={{height: '100%', width: '100%', alignItems: 'center', backgroundColor: 'white'}}>
