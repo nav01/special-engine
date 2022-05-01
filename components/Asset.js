@@ -7,7 +7,21 @@ import CheckOut from './CheckOut';
 export default function Asset({ route, navigation }) {
     const { asset } = route.params;
     const [modalVisible, setModalVisible] = useState(false);
-    const [assigned, setAssigned] = useState(asset['assigned_to'] == null ? false : true);
+    const [status, setStatus] = useState({
+        id: asset['status_label']['id'],
+        name: asset['status_label']['name'],
+        meta: asset['status_label']['meta']
+    });
+    const [assignedTo, setAssignedTo] = useState(
+        asset['assigned_to'] == null ? 
+            null :
+            {
+                id: asset['assigned_to']['id'],
+                name: asset['assigned_to']['name'],
+                employeeNumber: asset['assigned_to']['employee_number'],
+                type: asset['assigned_to']['type']
+            }
+    )
 
     useEffect(() => navigation.setOptions({title: `Asset - ${asset['asset_tag']}`}));
     
@@ -15,22 +29,22 @@ export default function Asset({ route, navigation }) {
         <View style={{height: '100%', width: '100%', alignItems: 'center', backgroundColor: 'white'}}>
             <View style={[{height: '100%', width: '100%', alignItems: 'center'}]}>
                 <Image source={{uri: asset['image']}} style={styles.assetImage}/>
-                <Pressable onPress={() => setModalVisible(true)}><Text style={styles.assetAction}>{ assigned  ? 'Checkin' : 'Checkout' }</Text></Pressable>
+                <Pressable onPress={() => setModalVisible(true)}><Text style={styles.assetAction}>{ assignedTo == null  ? 'Checkout' : 'Checkin'}</Text></Pressable>
                 <View style={[styles.detailRow, styles.detailRowOdd]}>
                     <Text style={styles.detailHeader}>Status</Text>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text style={[styles.circle, asset['assigned_to'] == null ? styles.circleAvailable : styles.circleUnavailable]}/>
-                        <Text style={styles.detail}>{asset['status_label']['name']}</Text>
+                        <Text style={[styles.circle, assignedTo == null ? styles.circleAvailable : styles.circleUnavailable]}/>
+                        <Text style={styles.detail}>{status.name}</Text>
                         <Text style={{fontSize: 15, backgroundColor: '#d2d6de', color: '#444', borderRadius: 5, marginLeft: 3}}>
-                            {asset['status_label']['status_meta']}
+                            {status.meta}
                         </Text>
                     </View>
                     {
-                        assigned &&
+                        assignedTo != null &&
                         <View styles={{flexDirection: 'row'}}>
                             <Text style={styles.detail}>
-                                {asset['assigned_to']['type'] == 'user' && <AntDesign name="user" size={22}/>}
-                                {asset['assigned_to']['name']}
+                                {assignedTo.type == 'user' && <AntDesign name="user" size={22}/>}
+                                {assignedTo.name}
                             </Text>
                         </View>
                     }
@@ -48,8 +62,8 @@ export default function Asset({ route, navigation }) {
                     <Text style={styles.detail}>{asset['model']['name']}</Text>
                 </View>
             </View>
-            {(modalVisible && assigned) && <Checkin asset={asset} checkInSuccess={() => setAssigned(false)} closeModal={() => setModalVisible(false)}/>}
-            {(modalVisible && !assigned) && <CheckOut asset={asset} checkOutSuccess={() => {}} closeModal={() => setModalVisible(false)}/>}
+            {(modalVisible && assignedTo != null) && <Checkin asset={asset} checkInSuccess={() => setAssignedTo(null)} closeModal={() => setModalVisible(false)}/>}
+            {(modalVisible && assignedTo == null) && <CheckOut asset={asset} checkOutSuccess={() => {}} closeModal={() => setModalVisible(false)}/>}
         </View>
     );
 }
