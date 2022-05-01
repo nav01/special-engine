@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, Image, View, Pressable } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import Checkin from './Checkin';
+import CheckOut from './CheckOut';
 
 export default function Asset({ route, navigation }) {
     const { asset } = route.params;
@@ -47,7 +48,8 @@ export default function Asset({ route, navigation }) {
                     <Text style={styles.detail}>{asset['model']['name']}</Text>
                 </View>
             </View>
-            {modalVisible && <Checkin asset={asset} checkInSuccess={() => setAssigned(false)} closeModal={() => setModalVisible(false)}/>}
+            {(modalVisible && assigned) && <Checkin asset={asset} checkInSuccess={() => setAssigned(false)} closeModal={() => setModalVisible(false)}/>}
+            {(modalVisible && !assigned) && <CheckOut asset={asset} checkOutSuccess={() => {}} closeModal={() => setModalVisible(false)}/>}
         </View>
     );
 }
