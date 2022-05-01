@@ -4,20 +4,14 @@ import { longToast, postCheckout, fetchUsers } from './Utils';
 import { Foundation } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 
-export default function CheckOut({ asset, checkOutSuccess, closeModal }) {
+export default function CheckOut({ asset, onCheckOutSuccess, closeModal }) {
     const [checkoutSearch, setCheckoutSearch] = useState('');
     const [checkoutTarget, setCheckoutTarget] = useState(null);
     const [note, setNote] = useState('');
     
 
-    const onCheckOutSuccess = (message) => {
-        longToast(message);
-        checkOutSuccess();
-        closeModal();
-    }
-
     const checkOut = () => {
-        postCheckout(asset['id'], {checkout_to_type: 'user', assigned_user: checkoutTarget['id'], note: note}, onCheckOutSuccess, longToast);
+        postCheckout(asset.id, {checkout_to_type: 'user', assigned_user: checkoutTarget.id, note: note}, onCheckOutSuccess, longToast);
     }
 
     return (
@@ -28,7 +22,7 @@ export default function CheckOut({ asset, checkOutSuccess, closeModal }) {
         >
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <Text style={{fontSize: 25}}>Check Out <Text style={{fontWeight: 'bold'}}>{asset['asset_tag']}</Text></Text>
+                    <Text style={{fontSize: 25}}>Check Out <Text style={{fontWeight: 'bold'}}>{asset.assetTag}</Text></Text>
                     <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
                         <TextInput
                             style={{fontSize: 20, width: '60%', marginRight: 5}}
@@ -62,9 +56,10 @@ export default function CheckOut({ asset, checkOutSuccess, closeModal }) {
                         defaultValue={note}
                     />
                     <Pressable 
+                        disabled={checkoutTarget == null ? true : false}
                         onPress={checkOut} 
-                        style={styles.checkOut}>
-                            <Text style={{fontSize: 25, paddingLeft: 10, paddingRight: 10}}>Check Out</Text>
+                        style={[styles.checkOut, {backgroundColor: checkoutTarget == null ? 'lightgrey' : '#30abc3'}]}>
+                            <Text style={{color: checkoutTarget == null ? 'darkgrey' : 'black', fontSize: 25, paddingLeft: 10, paddingRight: 10}}>Check Out</Text>
                     </Pressable>
                 </View>
             </View>
@@ -76,7 +71,6 @@ const styles = StyleSheet.create({
     checkOut: {
         fontSize: 20,
         borderRadius: 10,
-        backgroundColor: '#30abc3',
     },
     centeredView: {
         width: '100%',

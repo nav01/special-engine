@@ -1,5 +1,8 @@
 import { SNIPE_IT_PROXY_API_URL } from '@env';
 import { Platform, ToastAndroid } from 'react-native';
+import { Status } from '../models/Status';
+import User from '../models/User';
+import Asset from '../models/Asset';
 
 export const fetchUsers = (searchString, success, fail) => {
     fetch(SNIPE_IT_PROXY_API_URL + '/users?search=' + searchString)
@@ -7,14 +10,13 @@ export const fetchUsers = (searchString, success, fail) => {
         .then(json => {
           const numResults = json['total'];
           if(numResults == 1)
-            success(json['rows'][0]);
+            success(new User(json['rows'][0]));
           else if(numResults == 0)
             fail('User not found.');
           else if(numResults > 1)
             fail('Too many users found. Try being more specific.');
         })
         .catch(error => console.error(error));
-    
 }
 
 export const fetchAsset = (assetTag, success, fail) => {
@@ -22,7 +24,7 @@ export const fetchAsset = (assetTag, success, fail) => {
         .then(response =>  response.json())
         .then(json => {
           if(!('status' in json))
-            success(json);
+            success(new Asset(json));
           else { 
             fail(assetTag);
           } 
@@ -34,8 +36,8 @@ export const fetchStatuses = (success, fail) => {
     fetch(SNIPE_IT_PROXY_API_URL + '/statuslabels')
         .then(response => response.json())
         .then(json => {
-            if (json['total'] > 0)
-              success(json['rows']);
+            if (json['total'] > 0) 
+              success(json['rows'].map(status => new Status(status)));
             else
               fail();
         })

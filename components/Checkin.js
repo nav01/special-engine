@@ -3,12 +3,11 @@ import { Alert, Modal, StyleSheet, Text, Pressable, TextInput, View } from 'reac
 import { Picker } from '@react-native-picker/picker';
 import { longToast, postCheckin, fetchStatuses } from './Utils';
 
-export default function Checkin({ asset, checkInSuccess, closeModal }) {
+export default function Checkin({ asset, onCheckInSuccess, closeModal }) {
     const [statuses, setStatuses] = useState([]);
-    const [selectedStatus, setSelectedStatus] = useState(asset['status_label']['id']);
+    const [selectedStatus, setSelectedStatus] = useState(asset.status.id);
     const [note, setNote] = useState('');
     
-
     useEffect(() => {
         fetchStatuses(
             (statuses) => setStatuses(statuses),
@@ -16,17 +15,8 @@ export default function Checkin({ asset, checkInSuccess, closeModal }) {
         );
     }, []);
 
-    const onCheckInSuccess = (message) => {
-        longToast(message);
-        checkInSuccess();
-        closeModal();
-    }
-
     const checkIn = () => {
-        if (note != '') 
-            postCheckin(asset['id'], {status_id: selectedStatus, note: note}, onCheckInSuccess, longToast);
-        else    
-            postCheckin(asset['id'], {status_id: selectedStatus}, onCheckInSuccess, longToast);
+        postCheckin(asset.id, {status_id: selectedStatus, note: note}, onCheckInSuccess, longToast);
     }
 
     return (
@@ -37,17 +27,17 @@ export default function Checkin({ asset, checkInSuccess, closeModal }) {
         >
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <Text style={{fontSize: 25}}>Check In <Text style={{fontWeight: 'bold'}}>{asset['asset_tag']}</Text></Text>
+                    <Text style={{fontSize: 25}}>Check In <Text style={{fontWeight: 'bold'}}>{asset.assetTag}</Text></Text>
                     <Picker
                         selectedValue={selectedStatus}
                         style={{ width: '80%' }}
                         onValueChange={(itemValue, itemIndex) => setSelectedStatus(itemValue)}
                     >
-                        <Picker.Item label={asset['status_label']['name']} value={asset['status_label']['id']} />
+                        <Picker.Item label={asset.status.name} value={asset.status.id} key={asset.status.id} />
                         {
                             statuses.map((status) => 
                                 //avoid rerendering assets current status that is already loaded
-                                (status['id'] != asset['status_label']['id']) && <Picker.Item label ={status['name']} value={status['id']} />
+                                (status.id != asset.status.id) && <Picker.Item label ={status.name} value={status.id} key={asset.status.id} />
                             )
                         }
                     </Picker>

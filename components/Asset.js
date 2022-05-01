@@ -3,67 +3,61 @@ import { StyleSheet, Text, Image, View, Pressable } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import Checkin from './Checkin';
 import CheckOut from './CheckOut';
+import { fetchAsset, longToast } from './Utils';
 
 export default function Asset({ route, navigation }) {
-    const { asset } = route.params;
+    const [asset, setAsset] = useState(route.params.asset);
     const [modalVisible, setModalVisible] = useState(false);
-    const [status, setStatus] = useState({
-        id: asset['status_label']['id'],
-        name: asset['status_label']['name'],
-        meta: asset['status_label']['meta']
-    });
-    const [assignedTo, setAssignedTo] = useState(
-        asset['assigned_to'] == null ? 
-            null :
-            {
-                id: asset['assigned_to']['id'],
-                name: asset['assigned_to']['name'],
-                employeeNumber: asset['assigned_to']['employee_number'],
-                type: asset['assigned_to']['type']
-            }
-    )
 
-    useEffect(() => navigation.setOptions({title: `Asset - ${asset['asset_tag']}`}));
+    useEffect(() => navigation.setOptions({title: `Asset - ${asset.assetTag}`}));
+
+    const actionSuccess = () => {
+        fetchAsset(
+            asset.assetTag, 
+            (updatedAsset) => {setModalVisible(false); setAsset(updatedAsset);},
+            (assetTag) => longToast(`${assetTag} - not found`)
+        );
+    }
     
     return (
         <View style={{height: '100%', width: '100%', alignItems: 'center', backgroundColor: 'white'}}>
             <View style={[{height: '100%', width: '100%', alignItems: 'center'}]}>
-                <Image source={{uri: asset['image']}} style={styles.assetImage}/>
-                <Pressable onPress={() => setModalVisible(true)}><Text style={styles.assetAction}>{ assignedTo == null  ? 'Checkout' : 'Checkin'}</Text></Pressable>
+                <Image source={{uri: asset.image}} style={styles.assetImage}/>
+                <Pressable onPress={() => setModalVisible(true)}><Text style={styles.assetAction}>{ asset.user == null  ? 'Checkout' : 'Checkin'}</Text></Pressable>
                 <View style={[styles.detailRow, styles.detailRowOdd]}>
                     <Text style={styles.detailHeader}>Status</Text>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text style={[styles.circle, assignedTo == null ? styles.circleAvailable : styles.circleUnavailable]}/>
-                        <Text style={styles.detail}>{status.name}</Text>
+                        <Text style={[styles.circle, asset.user == null ? styles.circleAvailable : styles.circleUnavailable]}/>
+                        <Text style={styles.detail}>{asset.status.name}</Text>
                         <Text style={{fontSize: 15, backgroundColor: '#d2d6de', color: '#444', borderRadius: 5, marginLeft: 3}}>
-                            {status.meta}
+                            {asset.status.meta}
                         </Text>
                     </View>
                     {
-                        assignedTo != null &&
+                        asset.user != null &&
                         <View styles={{flexDirection: 'row'}}>
                             <Text style={styles.detail}>
-                                {assignedTo.type == 'user' && <AntDesign name="user" size={22}/>}
-                                {assignedTo.name}
+                                {asset.status.type == 'user' && <AntDesign name="user" size={22}/>}
+                                {asset.user.name}
                             </Text>
                         </View>
                     }
                 </View>
                 <View style={styles.detailRow}>
                     <Text style={styles.detailHeader}>Serial</Text>
-                    <Text style={styles.detail}>{asset['serial']}</Text>
+                    <Text style={styles.detail}>{asset.serial}</Text>
                 </View>
                 <View style={[styles.detailRow, styles.detailRowOdd]}>
                     <Text style={styles.detailHeader}>Category</Text>
-                    <Text style={styles.detail}>{asset['category']['name']}</Text>
+                    <Text style={styles.detail}>{asset.category.name}</Text>
                 </View>
                 <View style={styles.detailRow}>
                     <Text style={styles.detailHeader}>Model</Text>
-                    <Text style={styles.detail}>{asset['model']['name']}</Text>
+                    <Text style={styles.detail}>{asset.model.name}</Text>
                 </View>
             </View>
-            {(modalVisible && assignedTo != null) && <Checkin asset={asset} checkInSuccess={() => setAssignedTo(null)} closeModal={() => setModalVisible(false)}/>}
-            {(modalVisible && assignedTo == null) && <CheckOut asset={asset} checkOutSuccess={() => {}} closeModal={() => setModalVisible(false)}/>}
+            {(modalVisible && asset.user != null) && <Checkin asset={asset} onCheckInSuccess={actionSuccess} closeModal={() => setModalVisible(false)}/>}
+            {(modalVisible && asset.user == null) && <CheckOut asset={asset} onCheckOutSuccess={actionSuccess} closeModal={() => setModalVisible(false)}/>}
         </View>
     );
 }

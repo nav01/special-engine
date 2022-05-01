@@ -9,7 +9,7 @@ export default function AssetSearch({ navigation }) {
     const [assetTag, setAssetTag] = useState('');
 
     const assetFetchSuccess = (asset) => {
-      navigation.navigate('Asset', {asset: asset});
+      navigation.navigate('Asset', {asset});
     }
 
     const assetFetchFailure = (assetTag) => {
