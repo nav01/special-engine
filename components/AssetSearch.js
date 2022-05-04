@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ToastAndroid, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { fetchAsset } from './Utils';
-import ScanAction from './ScanAction';
+
 
 export default function AssetSearch({ navigation }) {
 
@@ -18,7 +18,7 @@ export default function AssetSearch({ navigation }) {
     }
   
     return (
-      <View style={{height: '100%', width: '100%'}}>
+      <View style={{ width: '100%'}}>
         <View style={styles.searchAsset}>
           <TextInput
               style={{height: 80, fontSize: 25, width: '60%', marginRight: 5}}
@@ -34,7 +34,7 @@ export default function AssetSearch({ navigation }) {
               <Text style={{height: 40, fontSize: 25}}>Search</Text>
           </Pressable>
         </View>
-        <ScanAction scanning={false} navigation={navigation} />
+        
       </View>
     );
   }

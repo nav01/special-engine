@@ -5,6 +5,7 @@ import Targetable from "./Targetable";
 import User from "./User";
 
 export default class Asset extends Targetable {
+    //expects json object retrieved from inventory server
     constructor(asset) {
         super('asset');
         this.id = asset['id'];
