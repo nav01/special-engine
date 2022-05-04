@@ -4,6 +4,7 @@ import { AntDesign } from '@expo/vector-icons';
 import Checkin from './Checkin';
 import CheckOut from './CheckOut';
 import { fetchAsset, longToast } from './Utils';
+import GlobalStyles from '../Styles';
 
 export default function Asset({ route, navigation }) {
     const [asset, setAsset] = useState(route.params.asset);
@@ -23,13 +24,18 @@ export default function Asset({ route, navigation }) {
         <View style={{height: '100%', width: '100%', alignItems: 'center', backgroundColor: 'white'}}>
             <View style={[{height: '100%', width: '100%', alignItems: 'center'}]}>
                 <Image source={{uri: asset.image}} style={styles.assetImage}/>
-                <Pressable onPress={() => setModalVisible(true)}><Text style={styles.assetAction}>{ asset.user == null  ? 'Checkout' : 'Checkin'}</Text></Pressable>
-                <View style={[styles.detailRow, styles.detailRowOdd]}>
+                <Pressable
+                    style={({pressed}) => [styles.assetActionButton, pressed ? GlobalStyles.buttonPressedColor : GlobalStyles.buttonColor]}
+                    onPress={() => setModalVisible(true)}
+                >
+                    <Text style={styles.assetAction}>{ asset.user == null  ? 'Checkout' : 'Checkin'}</Text>
+                </Pressable>
+                <View style={[styles.detailRow, styles.detailRowOdd, GlobalStyles.shadeListItem]}>
                     <Text style={styles.detailHeader}>Status</Text>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Text style={[styles.circle, asset.user == null ? styles.circleAvailable : styles.circleUnavailable]}/>
                         <Text style={styles.detail}>{asset.status.name}</Text>
-                        <Text style={{fontSize: 15, backgroundColor: '#d2d6de', color: '#444', borderRadius: 5, marginLeft: 3}}>
+                        <Text style={{fontSize: 15, backgroundColor: '#d2d6de', color: '#444', borderRadius: 5, marginLeft: 3, paddingLeft: 2, paddingRight: 2}}>
                             {asset.status.meta}
                         </Text>
                     </View>
@@ -47,7 +53,7 @@ export default function Asset({ route, navigation }) {
                     <Text style={styles.detailHeader}>Serial</Text>
                     <Text style={styles.detail}>{asset.serial}</Text>
                 </View>
-                <View style={[styles.detailRow, styles.detailRowOdd]}>
+                <View style={[styles.detailRow, styles.detailRowOdd, GlobalStyles.shadeListItem]}>
                     <Text style={styles.detailHeader}>Category</Text>
                     <Text style={styles.detail}>{asset.category.name}</Text>
                 </View>
@@ -68,15 +74,16 @@ const styles = StyleSheet.create({
         width: '100%',
         minHeight: 200,
     },
-    assetAction: {
-        backgroundColor: '#30abc3',
+    assetActionButton: {
         height: 40,
-        fontSize: 25,
         borderRadius: 5,
         paddingLeft: 5,
         paddingRight: 5,
         marginTop: 5,
         marginBottom: 10
+    },
+    assetAction: {
+        fontSize: 25,
     },
     detailRow: {
         width: '100%',
@@ -85,7 +92,6 @@ const styles = StyleSheet.create({
         paddingRight: 5
     },
     detailRowOdd: {
-        backgroundColor: '#f9f9f9',
         borderTopWidth: 1,
         borderBottomWidth: 1,
         borderTopColor: '#dddddd',

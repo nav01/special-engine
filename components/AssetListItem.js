@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons'; 
+import GlobalStyles from '../Styles'
 
 import { longToast, postCheckin } from './Utils';
 
@@ -32,7 +33,7 @@ export default function AssetListItem({ index, asset, currStatus, currNote }) {
     }, []);
 
     return (
-        <View style={[styles.assetContainer, (index % 2 == 0) && styles.even]}>
+        <View style={[styles.assetContainer, (index % 2 == 0) && GlobalStyles.shadeListItem]}>
             <Text style={styles.assetTag}>
                 {asset.assetTag}
             </Text>
@@ -46,9 +47,6 @@ export default function AssetListItem({ index, asset, currStatus, currNote }) {
 }
 
 const styles = StyleSheet.create({
-    even: {
-        backgroundColor: '#F0F0F0'
-    },
     assetTag: {
         fontSize: 35,
         maxWidth: '70%'

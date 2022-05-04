@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import GlobalStyles from '../Styles';
 import { fetchAsset, longToast } from './Utils';
 
 export default function AssetSearchTemp({ onAssetGet, action }) {
@@ -16,7 +17,7 @@ export default function AssetSearchTemp({ onAssetGet, action }) {
             />
             <Pressable
                 style={({pressed}) =>
-                    [styles.actionButton, {backgroundColor: pressed? '#b1e2ec' :'#30abc3'}]}
+                    [styles.actionButton, pressed ? GlobalStyles.buttonPressedColor : GlobalStyles.buttonColor]}
                 onPress={() => {
                     fetchAsset(
                         assetTag, 
