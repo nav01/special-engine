@@ -1,49 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import { ToastAndroid, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useState } from 'react';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { fetchAsset, longToast } from './Utils';
 
-import { fetchAsset } from './Utils';
-
-
-export default function AssetSearch({ navigation }) {
-
+export default function AssetSearchTemp({ onAssetGet, action }) {
     const [assetTag, setAssetTag] = useState('');
 
-    const assetFetchSuccess = (asset) => {
-      navigation.navigate('Asset', {asset});
-    }
-
-    const assetFetchFailure = (assetTag) => {
-      if (Platform.OS == 'android')
-        ToastAndroid.show(`Asset ${assetTag} not found`, ToastAndroid.LONG);
-    }
-  
     return (
-      <View style={{ width: '100%'}}>
-        <View style={styles.searchAsset}>
-          <TextInput
-              style={{height: 80, fontSize: 25, width: '60%', marginRight: 5}}
-              placeholder="Enter asset tag"
-              onChangeText={newText => setAssetTag(newText)}
-              defaultValue={assetTag}
-          />
-          <Pressable onPress={() => fetchAsset(assetTag, assetFetchSuccess, assetFetchFailure)} style={({pressed}) =>
-              [{
-                  width: '30%', alignItems: 'center', borderRadius: 10, backgroundColor: pressed? '#b1e2ec' :'#30abc3'
-              }]}
-              >
-              <Text style={{height: 40, fontSize: 25}}>Search</Text>
-          </Pressable>
+        <View style={styles.searchContainer}>
+          <View style={styles.searchAsset}>
+            <TextInput
+                style={styles.assetInput}
+                placeholder="Enter asset tag"
+                onChangeText={newText => setAssetTag(newText)}
+                defaultValue={assetTag}
+            />
+            <Pressable
+                style={({pressed}) =>
+                    [styles.actionButton, {backgroundColor: pressed? '#b1e2ec' :'#30abc3'}]}
+                onPress={() => {
+                    fetchAsset(
+                        assetTag, 
+                        onAssetGet,
+                        message => longToast(message)
+                    );
+                    setAssetTag('');
+                }}
+            >
+                <Text style={styles.actionLabel}>{ action }</Text>
+            </Pressable>
+          </View>
         </View>
-        
-      </View>
     );
-  }
+}
 
 const styles = StyleSheet.create({
+    searchContainer: {
+        width: '100%'
+    },
+    actionLabel: {
+        height: 40,
+        fontSize: 25
+    },
+    actionButton: {
+        width: '30%',
+        alignItems: 'center',
+        borderRadius: 10
+    },
+    assetInput: {
+        height: 80, 
+        fontSize: 25, 
+        width: '60%', 
+        marginRight: 5
+    },
     searchAsset: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
     }
-  });
-  
+});

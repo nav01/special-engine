@@ -9,7 +9,6 @@ export default function AssetStatus({ onStatusChange }) {
     const [status, setStatus] = useState(null);
     
     useEffect(() => {
-        console.log('useEffect');
         fetchStatuses(
             (statuses) => setStatuses(statuses),
             () => longToast('Statuses could not be loaded. Please try again or edit status later')
