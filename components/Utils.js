@@ -76,3 +76,9 @@ export const longToast = (message) => {
   if (Platform.OS == 'android') 
     ToastAndroid.show(message, ToastAndroid.LONG);
 }
+
+export const ActionStatus = Object.freeze({
+  PENDING: Symbol('pending'),
+  SUCCESS: Symbol('successful'),
+  FAIL: Symbol('fail')
+});

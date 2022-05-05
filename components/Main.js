@@ -1,18 +1,24 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import AssetSearchTemp from './AssetSearch';
+import AssetSearch from './AssetSearch';
 import ScanAction from './ScanAction';
 import GlobalStyles from '../Styles';
 
 export default function Main({ navigation }) {
   return (
     <View style={{height: '100%', alignItems: 'center'}}>
-      <AssetSearchTemp action='Search' onAssetGet={(asset) => navigation.navigate('Asset', {asset})}/>
+      <AssetSearch action='Search' onAssetGet={(asset) => navigation.navigate('Asset', {asset})}/>
       <Pressable 
         onPress={() => navigation.navigate('QuickCheckIn')}
         style={({pressed}) => [styles.menuItem, pressed ? GlobalStyles.buttonPressedColor : GlobalStyles.buttonColor]}
       >
         <Text style={styles.menuItemText}>QUICK CHECK IN</Text>
+      </Pressable>
+      <Pressable 
+        onPress={() => navigation.navigate('QuickCheckOut')}
+        style={({pressed}) => [styles.menuItem, pressed ? GlobalStyles.buttonPressedColor : GlobalStyles.buttonColor]}
+      >
+        <Text style={styles.menuItemText}>QUICK CHECK OUT</Text>
       </Pressable>
       <ScanAction scanning={false} navigation={navigation} />
     </View>

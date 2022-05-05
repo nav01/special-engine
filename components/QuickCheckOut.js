@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { FlatList, StyleSheet, View } from "react-native";
-import AssetListItem from './AssetListItem';
-import AssetSearchTemp from './AssetSearch';
-import AssetStatus from './AssetStatus';
+import { FlatList, View } from 'react-native';
+
 import Note from './Note';
+import TargetSearch from './TargetSearch';
+import AssetListItem from './AssetListItem';
+import AssetSearch from './AssetSearch';
 import { longToast } from './Utils';
 
-export default function QuickCheckIn() {
-    const [assetStatus, setAssetStatus] = useState(null);
+export default function QuickCheckOut() {
     const [note, setNote] = useState('');
     const [assetList, setAssetList] = useState([]);
+    const [targetId, setTargetId] = useState(-1);
+    const [targetType, setTargetType] = useState('');
 
     const onGetAssetSuccess = (asset) => {
         if(!assetList.some(a => a.id == asset.id))
@@ -20,9 +22,14 @@ export default function QuickCheckIn() {
 
     return (
         <View style={{height: '100%', width: '100%', backgroundColor: 'white'}}>
-            <AssetSearchTemp action='Check In' onAssetGet={onGetAssetSuccess}/>
-            <AssetStatus onStatusChange={(status) => setAssetStatus(status)}/>
-            <Note onNoteChange={(note) => setNote(note)} action='checkin'/>
+            <TargetSearch 
+                onTargetGet={(targetId, targetType) => {
+                    setTargetId(targetId);
+                    setTargetType(targetType);
+                }}
+            />
+            {targetId != -1 && <AssetSearch action='Check Out' onAssetGet={onGetAssetSuccess}/>}
+            <Note onNoteChange={(note) => setNote(note)} action='checkout'/>
             <FlatList
                 style={{height: '100%', width: '100%'}}
                 data={assetList}
@@ -32,22 +39,14 @@ export default function QuickCheckIn() {
                         index={index} 
                         asset={item}
                         postBody={{
-                            status_id: assetStatus == null ? item.status.id : assetStatus,
+                            checkout_to_type: targetType,
+                            assigned_user: targetId,
                             note
                         }}
-                        action='checkin'
+                        action='checkout'
                     />
                 }} 
             />
-            
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    searchAsset: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-    }
-  });

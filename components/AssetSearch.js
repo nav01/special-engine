@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import GlobalStyles from '../Styles';
 import { fetchAsset, longToast } from './Utils';
 
-export default function AssetSearchTemp({ onAssetGet, action }) {
+export default function AssetSearch({ onAssetGet, action }) {
     const [assetTag, setAssetTag] = useState('');
 
     return (

@@ -3,7 +3,21 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
 
-export default function Note({ onNoteChange }) {
+export default function Note({ onNoteChange, action }) {
+    const checkInQuickNotes = [
+        {label: 'No quick note', value: ''},
+        {label: 'No notable issues', value: 'No notable issues'},
+        {label: 'Keys missing', value: 'Keys missing'},
+        {label: 'Cracked screen', value: 'Cracked screen'},
+        {label: 'Physically broken', value: 'Physically broken'},
+    ];
+
+    const checkOutQuickNotes = [
+        {label: 'No quick note', value: ''},
+        {label: 'Day loaner', value: 'Day loaner'},
+        {label: 'Temp checkout', value: 'Temporary checkout'}
+    ]
+
     const [note, setNote] = useState('');
     const [quickNote, setQuickNote] = useState('');
 
@@ -26,6 +40,7 @@ export default function Note({ onNoteChange }) {
                 <Text style={{fontSize: 20}}>Notes:</Text>
                 <Dropdown
                     style={styles.quickNote}
+                    maxHeight={175}
                     labelField='label'
                     valueField='value'
                     onChange={item => {
@@ -33,13 +48,7 @@ export default function Note({ onNoteChange }) {
                     }}
                     value={quickNote}
                     placeholder='Quick Note (optional)'
-                    data={[
-                        {label: 'No quick note', value: ''},
-                        {label: 'No notable issues', value: 'No notable issues'},
-                        {label: 'Keys missing', value: 'Keys missing'},
-                        {label: 'Cracked screen', value: 'Cracked screen'},
-                        {label: 'Physically broken', value: 'Physically broken'},
-                    ]}
+                    data={action == 'checkin' ? checkInQuickNotes : checkOutQuickNotes}
                 />
             </View>
             <TextInput

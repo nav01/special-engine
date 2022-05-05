@@ -26,8 +26,8 @@ export default function AssetStatus({ onStatusChange }) {
                 placeholder='Choose Status (optional)'
                 value={status}
                 onChange={item => {
-                    onStatusChange(item.value);
-                    setStatus(item.value);
+                    onStatusChange(item.id);
+                    setStatus(item.id);
                 }}
             />
         </View>
