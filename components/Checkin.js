@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Modal, StyleSheet, Text, Pressable, TextInput, View } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { Modal, StyleSheet, Text, Pressable, View } from 'react-native';
 import { longToast, postCheckin, fetchStatuses } from './Utils';
+import AssetStatus from './AssetStatus';
+import Note from './Note';
 
 export default function Checkin({ asset, onCheckInSuccess, closeModal }) {
-    const [statuses, setStatuses] = useState([]);
     const [selectedStatus, setSelectedStatus] = useState(asset.status.id);
     const [note, setNote] = useState('');
-    
-    useEffect(() => {
-        fetchStatuses(
-            (statuses) => setStatuses(statuses),
-            () => longToast('Statuses could not be loaded. Please try again or edit status later')
-        );
-    }, []);
 
     const checkIn = () => {
         postCheckin(asset.id, {status_id: selectedStatus, note: note}, onCheckInSuccess, longToast);
@@ -28,31 +21,12 @@ export default function Checkin({ asset, onCheckInSuccess, closeModal }) {
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                     <Text style={{fontSize: 25}}>Check In <Text style={{fontWeight: 'bold'}}>{asset.assetTag}</Text></Text>
-                    <Picker
-                        selectedValue={selectedStatus}
-                        style={{ width: '80%' }}
-                        onValueChange={(itemValue, itemIndex) => setSelectedStatus(itemValue)}
-                    >
-                        <Picker.Item label={asset.status.name} value={asset.status.id} key={asset.status.id} />
-                        {
-                            statuses.map((status) => 
-                                //avoid rerendering assets current status that is already loaded
-                                (status.id != asset.status.id) && <Picker.Item label ={status.name} value={status.id} key={asset.status.id} />
-                            )
-                        }
-                    </Picker>
-                    <Text>Notes:</Text>
-                    <TextInput
-                        onChangeText={newText => setNote(newText)}
-                        placeholder='Enter notes here' 
-                        multiline 
-                        numberOfLines={4}
-                        defaultValue={note}
-                    />
+                    <AssetStatus onStatusChange={setSelectedStatus}/>
+                    <Note onNoteChange={setNote} action='checkin' />
                     <Pressable 
                         onPress={checkIn} 
                         style={styles.checkIn}>
-                            <Text style={{fontSize: 25, paddingLeft: 10, paddingRight: 10}}>Check In</Text>
+                            <Text style={styles.checkInText}>Check In</Text>
                     </Pressable>
                 </View>
             </View>
@@ -61,8 +35,12 @@ export default function Checkin({ asset, onCheckInSuccess, closeModal }) {
 }
 
 const styles = StyleSheet.create({
+    checkInText: {
+        fontSize: 25, 
+        paddingLeft: 10, 
+        paddingRight: 10
+    },
     checkIn: {
-        fontSize: 20,
         borderRadius: 10,
         backgroundColor: '#30abc3'
     },
