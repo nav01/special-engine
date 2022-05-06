@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { Modal, StyleSheet, Text, Pressable, TextInput, View } from 'react-native';
 import { longToast, postCheckout, fetchUsers } from './Utils';
-import { Foundation } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
+import TargetSearch from './TargetSearch';
+import Note from './Note';
 
 export default function CheckOut({ asset, onCheckOutSuccess, closeModal }) {
-    const [checkoutSearch, setCheckoutSearch] = useState('');
-    const [checkoutTarget, setCheckoutTarget] = useState(null);
+    const [targetId, setTargetId] = useState(-1);
+    const [targetType, setTargetType] = useState('');
     const [note, setNote] = useState('');
     
 
     const checkOut = () => {
-        postCheckout(asset.id, {checkout_to_type: 'user', assigned_user: checkoutTarget.id, note: note}, onCheckOutSuccess, longToast);
+        postCheckout(asset.id, {checkout_to_type: targetType, assigned_user: targetId, note: note}, onCheckOutSuccess, longToast);
     }
 
     return (
@@ -23,43 +23,18 @@ export default function CheckOut({ asset, onCheckOutSuccess, closeModal }) {
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                     <Text style={{fontSize: 25}}>Check Out <Text style={{fontWeight: 'bold'}}>{asset.assetTag}</Text></Text>
-                    <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
-                        <TextInput
-                            style={{fontSize: 20, width: '60%', marginRight: 5}}
-                            placeholder="Enter target details"
-                            onChangeText={newText => setCheckoutSearch(newText)}
-                            defaultValue={checkoutSearch}
-                        />
-                        <Pressable onPress={() => fetchUsers(checkoutSearch, (target) => setCheckoutTarget(target), (message) => longToast(message))} style={({pressed}) =>
-                            [{
-                                alignItems: 'center', justifyContent: 'center', width: 50, height: 35, alignItems: 'center', borderRadius: 10, backgroundColor: pressed? '#b1e2ec' :'#30abc3'
-                            }]}
-                            >
-                            <AntDesign name="search1" size={24} color="black" />
-                        </Pressable>
-                    </View>
-                    
-                    {
-                        checkoutTarget != null &&
-                        <Text style={{fontSize: 25}}>
-                            <Foundation name="target" size={24} color="red" />
-                            <AntDesign name="arrowright" size={24} color="black" />
-                            {checkoutTarget['name']}
-                        </Text>
-                    }
-                    <Text>Notes:</Text>
-                    <TextInput
-                        onChangeText={newText => setNote(newText)}
-                        placeholder='Enter notes here' 
-                        multiline 
-                        numberOfLines={4}
-                        defaultValue={note}
+                    <TargetSearch 
+                        onTargetGet={(targetId, targetType) => {
+                            setTargetId(targetId);
+                            setTargetType(targetType);
+                        }}
                     />
+                    <Note  onNoteChange={note => setNote(note)} action='checkout'/>
                     <Pressable 
-                        disabled={checkoutTarget == null ? true : false}
+                        disabled={targetId == -1 ? true : false}
                         onPress={checkOut} 
-                        style={[styles.checkOut, {backgroundColor: checkoutTarget == null ? 'lightgrey' : '#30abc3'}]}>
-                            <Text style={{color: checkoutTarget == null ? 'darkgrey' : 'black', fontSize: 25, paddingLeft: 10, paddingRight: 10}}>Check Out</Text>
+                        style={[styles.checkOut, {backgroundColor: targetId == -1 ? 'lightgrey' : '#30abc3'}]}>
+                           <Text style={[{color: targetId == -1 ? 'darkgrey' : 'black'}, styles.checkOutButton]}>Check Out</Text>
                     </Pressable>
                 </View>
             </View>
@@ -68,6 +43,11 @@ export default function CheckOut({ asset, onCheckOutSuccess, closeModal }) {
 }
 
 const styles = StyleSheet.create({
+    checkOutButton: {
+        fontSize: 25, 
+        paddingLeft: 10, 
+        paddingRight: 10
+    },
     checkOut: {
         fontSize: 20,
         borderRadius: 10,
