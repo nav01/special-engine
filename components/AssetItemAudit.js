@@ -13,6 +13,7 @@ export default function AssetItemAudit({ index, asset, navigation }) {
                 {asset.assetTag}
             </Text>
             {asset.name != "" && <Text>Name: {asset.name}</Text>}
+            <Text>{asset.category.name + ' ' + asset.model.name}</Text>
             <Text>Checked out: {asset.lastCheckout == null ? 'Never' : asset.lastCheckout}</Text>
         </Pressable>
     )
