@@ -24,9 +24,9 @@ export default function CheckOut({ asset, onCheckOutSuccess, closeModal }) {
                 <View style={styles.modalView}>
                     <Text style={{fontSize: 25}}>Check Out <Text style={{fontWeight: 'bold'}}>{asset.assetTag}</Text></Text>
                     <TargetSearch 
-                        onTargetGet={(targetId, targetType) => {
-                            setTargetId(targetId);
-                            setTargetType(targetType);
+                        onTargetGet={target => {
+                            setTargetId(target.id);
+                            setTargetType(target.type);
                         }}
                     />
                     <Note  onNoteChange={note => setNote(note)} action='checkout'/>

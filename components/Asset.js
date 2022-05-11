@@ -53,11 +53,17 @@ export default function Asset({ route, navigation }) {
                     <Text style={styles.detailHeader}>Serial</Text>
                     <Text style={styles.detail}>{asset.serial}</Text>
                 </View>
-                <View style={[styles.detailRow, styles.detailRowOdd, GlobalStyles.shadeListItem]}>
+                {asset.name != '' &&
+                    <View style={[styles.detailRow, styles.detailRowOdd, GlobalStyles.shadeListItem]}>
+                        <Text style={styles.detailHeader}>Name</Text>
+                        <Text style={styles.detail}>{asset.name}</Text>
+                    </View>
+                }
+                <View style={styles.detailRow}>
                     <Text style={styles.detailHeader}>Category</Text>
                     <Text style={styles.detail}>{asset.category.name}</Text>
                 </View>
-                <View style={styles.detailRow}>
+                <View style={[styles.detailRow, styles.detailRowOdd, GlobalStyles.shadeListItem]}>
                     <Text style={styles.detailHeader}>Model</Text>
                     <Text style={styles.detail}>{asset.model.name}</Text>
                 </View>

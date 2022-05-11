@@ -19,6 +19,32 @@ export const fetchUsers = (searchString, success, fail) => {
         .catch(error => console.error(error));
 }
 
+export const fetchUsersAssets = (userId, success) => {
+    fetch(SNIPE_IT_PROXY_API_URL + `users/${userId}/assets`)
+      .then(response => response.json())
+      .then(json => {
+        success(json['rows'].map(a => new Asset(a)));
+      })
+      .catch(error => console.error(error));
+}
+
+export const patchUser = (userId, postBody, success, fail) => {
+  fetch(SNIPE_IT_PROXY_API_URL + `users/${userId}`, {
+    method: 'PATCH',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(postBody)
+  })
+    .then(response => response.json())
+    .then(json => {
+      if (json['status'] == 'success')
+        success(json['messages']);
+      else if (json['status'] == 'error')
+        fail(json['messages']);
+    })
+    .catch(error => console.error(error));
+
+}
+
 export const fetchAsset = (assetTag, success, fail) => {
     fetch(SNIPE_IT_PROXY_API_URL + `/hardware/bytag/${assetTag}`)
         .then(response =>  response.json())
@@ -52,16 +78,16 @@ const checkInCheckOut = (action, assetId, postBody, success, fail) => {
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(postBody)
   })
-  .then(response => response.json())
-  .then(json => {
-      if (json['status'] == 'success')
-        success(json['messages']);
-      else if (json['status'] == 'error')
-        fail(json['messages']);
-  })
-  .catch(error => {
-      console.error(error);
-  });
+    .then(response => response.json())
+    .then(json => {
+        if (json['status'] == 'success')
+          success(json['messages']);
+        else if (json['status'] == 'error')
+          fail(json['messages']);
+    })
+    .catch(error => {
+        console.error(error);
+    });
 
 }
 export const postCheckin = (assetId, postBody, success, fail) => {

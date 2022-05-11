@@ -20,6 +20,12 @@ export default function Main({ navigation }) {
       >
         <Text style={styles.menuItemText}>QUICK CHECK OUT</Text>
       </Pressable>
+      <Pressable 
+        onPress={() => navigation.navigate('Audit', {navigation})}
+        style={({pressed}) => [styles.menuItem, pressed ? GlobalStyles.buttonPressedColor : GlobalStyles.buttonColor]}
+      >
+        <Text style={styles.menuItemText}>AUDIT</Text>
+      </Pressable>
       <ScanAction scanning={false} navigation={navigation} />
     </View>
   );

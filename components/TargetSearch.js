@@ -26,7 +26,7 @@ export default function TargetSearch({ onTargetGet }) {
                             (foundTarget) => {
                                 setTargetSearch('');
                                 setTarget(foundTarget);
-                                onTargetGet(foundTarget.id, foundTarget.type);
+                                onTargetGet(foundTarget);
                             },
                             (message) => longToast(message)
                         )

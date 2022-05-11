@@ -11,10 +11,17 @@ export default class Asset extends Targetable {
         this.id = asset['id'];
         this.assetTag = asset['asset_tag'];
         this.serial = asset['serial'];
+        this.name = asset['name'];
         this.image = asset['image'];
         this.category = new Category(asset['category']);
         this.model = new Model(asset['model']);
         this.status = new StatusMeta(asset['status_label'], asset['status_label']['status_meta']);
+
+        if (asset['last_checkout'] != null) {
+            this.lastCheckout = asset['last_checkout']['formatted'];
+        } else {
+            this.lastCheckout = null;
+        }
 
         if(asset['assigned_to'] == null)
             this.user = null;

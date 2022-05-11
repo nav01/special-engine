@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FlatList, View } from 'react-native';
+import { CheckBox, FlatList, View } from 'react-native';
 
 import Note from './Note';
 import TargetSearch from './TargetSearch';
@@ -23,9 +23,9 @@ export default function QuickCheckOut() {
     return (
         <View style={{height: '100%', width: '100%', backgroundColor: 'white'}}>
             <TargetSearch 
-                onTargetGet={(targetId, targetType) => {
-                    setTargetId(targetId);
-                    setTargetType(targetType);
+                onTargetGet={(target) => {
+                    setTargetId(target.id);
+                    setTargetType(target.type);
                 }}
             />
             {targetId != -1 && <AssetSearch action='Check Out' onAssetGet={onGetAssetSuccess}/>}
@@ -47,6 +47,7 @@ export default function QuickCheckOut() {
                     />
                 }} 
             />
+
         </View>
     );
 }
