@@ -1,8 +1,12 @@
-import { SNIPE_IT_PROXY_API_URL } from '@env';
 import { Platform, ToastAndroid } from 'react-native';
 import { Status } from '../models/Status';
+import Constants from 'expo-constants';
+
 import User from '../models/User';
 import Asset from '../models/Asset';
+
+const SNIPE_IT_PROXY_API_URL = Constants.manifest.extra.apiUrl
+console.log(SNIPE_IT_PROXY_API_URL);
 
 export const fetchUsers = (searchString, success, fail) => {
     fetch(SNIPE_IT_PROXY_API_URL + '/users?search=' + searchString)
@@ -20,7 +24,7 @@ export const fetchUsers = (searchString, success, fail) => {
 }
 
 export const fetchUsersAssets = (userId, success) => {
-    fetch(SNIPE_IT_PROXY_API_URL + `users/${userId}/assets`)
+    fetch(SNIPE_IT_PROXY_API_URL + `/users/${userId}/assets`)
       .then(response => response.json())
       .then(json => {
         success(json['rows'].map(a => new Asset(a)));
@@ -29,7 +33,7 @@ export const fetchUsersAssets = (userId, success) => {
 }
 
 export const patchUser = (userId, postBody, success, fail) => {
-  fetch(SNIPE_IT_PROXY_API_URL + `users/${userId}`, {
+  fetch(SNIPE_IT_PROXY_API_URL + `/users/${userId}`, {
     method: 'PATCH',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(postBody)

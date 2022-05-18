@@ -11,16 +11,18 @@ import GlobalStyles from '../Styles';
 
 
 export default function Audit({ navigation }) {
-    const [target, setTarget] = useState(null);
-    const [assetList, setAssetList] = useState([]);
-    const [assetListExpanded, setAssetListExpanded] = useState(false);
-    const [auditMarks, setAuditMarks] = useState({
+    const DEFAULT_AUDIT_MARKS_STATE = {
         clear: {value: false, note: 'All clear' },
         multiple: {value: false, note: 'Multiple chromebooks'},
         wrong: {value: false, note: 'Wrong chromebook'},
         damaged: {value: false, note: 'Damaged chromebook'},
         forgot: {value: false, note: 'Forgot chromebook'}
-    });
+    };
+
+    const [target, setTarget] = useState(null);
+    const [assetList, setAssetList] = useState([]);
+    const [assetListExpanded, setAssetListExpanded] = useState(true);
+    const [auditMarks, setAuditMarks] = useState(DEFAULT_AUDIT_MARKS_STATE);
     const [auditMarksExpanded, setAuditMarksExpanded] = useState(true);
     const [additionalNotes, setAdditionalNotes] = useState('');
     const [notes, setNotes] = useState('');
@@ -177,8 +179,10 @@ export default function Audit({ navigation }) {
                             }, 
                             longToast,
                             longToast
-                        )}
-                    }
+                        );
+                        setAdditionalNotes('');
+                        setAuditMarks(DEFAULT_AUDIT_MARKS_STATE);
+                    }}
                 >
                     <Text style={{fontSize: 30}}>SUBMIT</Text>
                 </Pressable>

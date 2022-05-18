@@ -12,7 +12,7 @@ export default class User extends Targetable {
         this.notes = user['notes'];
         
         if (user['department'] != null && user['location'] != null) {
-            this.site = '{}-{}'.format(user['department']['name'], user['location']['name']);
+            this.site = `${user.department.name}-${user.location.name}`;
         } else if (user['department'] != null && user['location'] == null) {
             this.site = user['department']['name'];
         } else if (user['location'] != null && user['department'] == null) {

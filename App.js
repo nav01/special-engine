@@ -12,6 +12,7 @@ import Audit from './components/Audit';
 const Stack = createNativeStackNavigator();
 
 function MainScreen({ navigation }) {
+
   return (
     <View style = {styles.container}>
       <StatusBar style="auto" />
